@@ -1,0 +1,22 @@
+[project]
+name = "learn-build123d"
+version = "0.1.0"
+description = "Learning build123d fundamentals through hands-on lessons"
+requires-python = ">=3.12"
+dependencies = [
+    "build123d",
+    "ocp-vscode",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipython",
+    "ruff",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["lessons*"]
