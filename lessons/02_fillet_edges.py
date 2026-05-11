@@ -20,9 +20,7 @@ profile += Rectangle(4 * MM, 3 * CM, align=Align.MIN)
 angle_iron = extrude(profile, 10 * CM)
 
 # --- Fillet every edge ------------------------------------------------------
-# Get all edges (both interior and exterior) and fillet them
-for edge in angle_iron.edges():
-    angle_iron = fillet(edge, 3 * MM)
+angle_iron = fillet(angle_iron.edges(), 3 * MM)
 
 # --- Preview -----------------------------------------------------------------
 show(angle_iron)
