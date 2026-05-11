@@ -54,26 +54,48 @@ def bolt_holes_along_line(
     return positions
 
 
+def _rotation_for_axis(dx: float, dy: float, dz: float):
+    """Return a Rot that aligns Z-axis with (dx, dy, dz), or None if already Z."""
+    mag = math.sqrt(dx*dx + dy*dy + dz*dz)
+    if mag < 1e-9:
+        return None
+    nx, ny, nz = dx / mag, dy / mag, dz / mag
+    if nz > 0.9999:
+        return None  # Already Z-aligned
+    if nz < -0.9999:
+        return Rot(X=180)  # Flip Z
+    if nx > 0.9999:
+        return Rot(0, 90, 0)  # Z → X
+    if nx < -0.9999:
+        return Rot(0, -90, 0)  # Z → -X
+    if ny > 0.9999:
+        return Rot(-90, 0, 0)  # Z → Y
+    if ny < -0.9999:
+        return Rot(90, 0, 0)  # Z → -Y
+    # General case: pitch + roll to align Z with (nx, ny, nz)
+    pitch = math.degrees(math.atan2(nx, nz))  # rotation around Y
+    roll = math.degrees(math.atan2(-ny, math.sqrt(nx*nx + nz*nz)))  # rotation around X
+    return Rot(roll, pitch, 0)
+
+
 def make_cylinder_between(
     start: Tuple[float, float, float],
     end: Tuple[float, float, float],
     radius: float,
 ) -> Part:
-    """Create a cylinder spanning from start to end point.
-
-    In build123d, Cylinder is Z-axis by default. We position it at the
-    midpoint and rotate to align with the start-end vector.
-    """
+    """Create a cylinder spanning from start to end point."""
     sx, sy, sz = start
     ex, ey, ez = end
     dx, dy, dz = ex - sx, ey - sy, ez - sz
     length = math.sqrt(dx*dx + dy*dy + dz*dz)
     if length < 1e-9:
-        # Degenerate — return a sphere at the point
         return Pos(sx, sy, sz) * Sphere(radius)
     mid = ((sx + ex) / 2, (sy + ey) / 2, (sz + ez) / 2)
-    c = Pos(mid) * Cylinder(radius, length, direction=(dx, dy, dz))
-    return c
+    rot = _rotation_for_axis(dx, dy, dz)
+    cyl = Cylinder(radius, length)
+    if rot is not None:
+        cyl = rot * cyl
+    return Pos(mid) * cyl
 
 
 def hole_at(
@@ -90,4 +112,8 @@ def hole_at(
     """
     r = dia / 2
     dx, dy, dz = direction
-    return Pos(x, y, z) * Cylinder(r, depth, direction=(dx, dy, dz))
+    rot = _rotation_for_axis(dx, dy, dz)
+    cyl = Cylinder(r, depth)
+    if rot is not None:
+        cyl = rot * cyl
+    return Pos(x, y, z) * cyl
