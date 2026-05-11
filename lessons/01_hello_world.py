@@ -19,7 +19,7 @@ angle_iron = extrude(profile, 10 * CM)
 
 
 angle_iron = chamfer(
-    angle_iron.edges().filter_by(lambda e: not e.is_interior), 2 * MM
+    angle_iron.edges().filter_by(lambda e: not e.is_interior), 0.5 * MM
 )
 # --- Preview (requires ocp-vscode VS Code extension) ------------------------
 show(angle_iron)
