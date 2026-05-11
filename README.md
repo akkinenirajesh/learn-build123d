@@ -14,8 +14,8 @@ pip install -e ".[dev]"
 
 | # | Topic | File |
 |---|-------|------|
-| 1 | Hello World — your first part | `lessons/01_hello_world.py` |
-| 2 | Basic shapes | `lessons/02_basic_shapes.py` |
+| 1 | Hello World — angle iron with chamfers | `lessons/01_hello_world.py` |
+| 2 | Filleting all edges | `lessons/02_fillet_edges.py` |
 | 3 | Boolean operations | `lessons/03_operations.py` |
 | 4 | Workplanes & sketches | `lessons/04_workplanes.py` |
 | 5 | Assemblies & constraints | `lessons/05_assemblies.py` |
