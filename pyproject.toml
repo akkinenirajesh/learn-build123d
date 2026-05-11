@@ -19,4 +19,4 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["lessons*"]
+include = ["lessons*", "cnc*"]
